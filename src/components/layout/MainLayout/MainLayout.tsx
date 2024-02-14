@@ -9,7 +9,6 @@ import { UserNav } from "@/components/HeaderComponents/user.nav"
 import { Sidebar } from "@/components/HeaderComponents/sidebar"
 import { playlists } from "../../HeaderComponents/data/playlist"
 import { QueryClient, QueryClientProvider } from "react-query";
-import { ToastContainer } from 'react-toastify';
 interface MyComponentProps {
   children: ReactNode;
 }
@@ -27,7 +26,7 @@ export default function MainLayout({ children }: MyComponentProps) {
 
   return (
     <>
-<ToastContainer />
+
       <QueryClientProvider client={queryClient}>
       <div className=" md:block overflow-y-hidden ">
         <div className="border-b">

@@ -24,14 +24,16 @@ export default function PointForm() {
     onSuccess: (data) => {
       console.log(data);
       const message = data.message;
-
-      if (message === "Point already exists") {
-        // Handle point already exists
-        toast.error(message);
-      } else {
-        // Handle data inserted successfully
-        toast.success(message);
-      }
+      toast.success(message, {
+       
+      }); 
+      // if (message === "Point already exists") {
+      //   // Handle point already exists
+      //   toast.error(message);
+      // } else {
+      //   // Handle data inserted successfully
+      //   toast.success(message);
+      // }
     },
     onError: () => {
       alert("there was an error");
@@ -78,21 +80,29 @@ export default function PointForm() {
 
 const NumberInputComponent = ({ onSubmit }: any) => {
   const [number, setNumber] = useState("");
+  const [startPoint, setStartPoint] = useState("");
+  const [endPoint, setEndPoint] = useState("");
 
   const handleChange = (event: any) => {
     setNumber(event.target.value);
   };
+  const handleChangeS = (event: any) => {
+    setStartPoint(event.target.value);
+  };
+  const handleChangeE = (event: any) => {
+    setEndPoint(event.target.value);
+  };
 
   const handleSubmit = () => {
-    onSubmit(number);
+    onSubmit(number ,startPoint,endPoint);
   };
 
   return (
     <div className="flex flex-col space-y-4 h-[90vh] p-4">
       <Label htmlFor="terms">Start Point</Label>
-      <Input className="py-3" type="text" onChange={handleChange} />
+      <Input className="py-3" type="text"  value={startPoint} onChange={handleChangeS} />
       <Label htmlFor="terms">End Point</Label>
-      <Input type="text" onChange={handleChange} />
+      <Input type="text"  value={endPoint} onChange={handleChangeE} />
       <Label htmlFor="terms">Number of Intermidate Points</Label>
       <Input type="number" value={number} onChange={handleChange} />
 
@@ -244,10 +254,12 @@ const MainComponent = ({ Submitdata }: any) => {
   const [Numberin, setNumber] = useState(0);
   const [inputs, setInputs] = useState<any>([]);
 
-  const handleNumberSubmit = (num: any) => {
+  const handleNumberSubmit = (num: any,statrpoint :any ,endpoint :any) => {
+    const pairName = { [statrpoint +'_'+ endpoint]:{ bs: "0", hdbs: "0", tbs: "0", fs: "0", hdfs: "0", tfs: "0"}, };
     setShowInputComponent(false);
     setNumber(parseInt(num) * 2 + 2);
     setCurrentNumber(parseInt(num) * 2 + 2);
+    setInputs([...inputs, pairName]);
   };
   const HandleDataSubmit = ():any => {
    
@@ -267,6 +279,7 @@ const MainComponent = ({ Submitdata }: any) => {
       setShowInputComponent(true);
       console.log("Final Inputs:", inputs);
       Submitdata(inputs);
+      // setInputs([])
     }
  }, [inputs]);
 
