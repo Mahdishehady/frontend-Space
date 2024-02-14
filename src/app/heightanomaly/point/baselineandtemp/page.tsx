@@ -1,27 +1,13 @@
 "use client";
-import { zodResolver } from "@hookform/resolvers/zod";
-
-import { z } from "zod";
 import { toast } from "react-toastify";
 import { useMutation } from "react-query";
-import { useSavePoint } from "@/app/services/pointservice";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import {
-  Form,
-  FormControl,
-  FormDescription,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
-import { useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
 import MainLayout from "@/components/layout/MainLayout/MainLayout";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Label } from "@/components/ui/label";
-import { truncate } from "fs/promises";
+import { SavePairPoint } from "@/app/services/pairpoints";
 export type BsFsRequest = {
   point1: string;
   point2: string;
@@ -33,62 +19,8 @@ export type BsFsRequest = {
   tfs: string;
 };
 
-// const profileFormSchema = z.object({
-//   point1: z
-//     .string()
-//     .min(2, {
-//       message: "Name must be at least 2 characters.",
-//     })
-//     .max(30, {
-//       message: "Name must not be longer than 30 characters.",
-//     }),
-//   point2: z
-//     .string()
-//     .min(2, {
-//       message: "Name must be at least 2 characters.",
-//     })
-//     .max(30, {
-//       message: "Name must not be longer than 30 characters.",
-//     }),
-
-//   bs: z.string().min(1, {
-//     message: "latdegree must be at least 1 digit.",
-//   }),
-
-//   hdbs: z.string().min(1, {
-//     message: "latdegree must be at least 1 digit.",
-//   }),
-
-//   tbs: z.string().min(1, {
-//     message: "latdegree must be at least 1 digit.",
-//   }),
-
-//   fs: z.string().min(1, {
-//     message: "latdegree must be at least 1 digit.",
-//   }),
-
-//   hdfs: z.string().min(1, {
-//     message: "latdegree must be at least 1 digit.",
-//   }),
-
-//   tfs: z.string().min(1, {
-//     message: "latdegree must be at least 1 digit.",
-//   }),
-// });
-
-// export type ProfileFormValues = z.infer<typeof profileFormSchema>;
-
-// This can come from your database or API.
-// const defaultValues: Partial<ProfileFormValues> = {};
-
 export default function PointForm() {
-  // const form = useForm<ProfileFormValues>({
-  //   resolver: zodResolver(profileFormSchema),
-  //   defaultValues,
-  //   mode: "onChange",
-  // });
-
-  const { mutate, status } = useMutation(useSavePoint, {
+  const { mutate, status } = useMutation(SavePairPoint, {
     onSuccess: (data) => {
       console.log(data);
       const message = data.message;
@@ -106,16 +38,14 @@ export default function PointForm() {
     },
   });
 
-  async function onSubmit(data: BsFsRequest) {
+  const Submitdata = async (data: any) => {
     try {
       console.log(data);
-      // mutate(data);
-
-      // form.reset();
+      await mutate(data);
     } catch (error) {
       console.error("Error saving data:", error);
     }
-  }
+  };
 
   return (
     <MainLayout>
@@ -140,168 +70,8 @@ export default function PointForm() {
           </h2>
         </div>
       </div>
-      {/* <Form {...form}>
-        <form
-          onSubmit={form.handleSubmit(onSubmit)}
-          className="flex flex-col space-y-8 h-[90vh] p-4"
-        >
-          <FormField
-            control={form.control}
-            name="point1"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>StartPoint</FormLabel>
-                <FormControl>
-                  <Input placeholder="..." {...field} />
-                </FormControl>
-                <FormDescription></FormDescription>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="point2"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>EndPoint</FormLabel>
-                <FormControl>
-                  <Input placeholder="..." {...field} />
-                </FormControl>
-                <FormDescription></FormDescription>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-           <FormField
-            control={form.control}
-            name="intermediatepoints"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Number Of Intermediate Point</FormLabel>
-                <FormControl>
-                  <Input placeholder="..." {...field} />
-                </FormControl>
-                <FormDescription></FormDescription>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-            <Card className="w-full col-span-1 md:col-span-2 lg:col-span-2">
-              <CardHeader className=" justify-center items-center">
-                <CardTitle className="font-medium text-md">BS</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <FormField
-                  control={form.control}
-                  name="bs"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>BS(m)</FormLabel>
-                      <FormControl>
-                        <Input placeholder="...." type="number" {...field} />
-                      </FormControl>
-                      <FormDescription></FormDescription>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                <FormField
-                  control={form.control}
-                  name="hdbs"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>HD(m)</FormLabel>
-                      <FormControl>
-                        <Input placeholder="..." type="number" {...field} />
-                      </FormControl>
-                      <FormDescription></FormDescription>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                <FormField
-                  control={form.control}
-                  name="tbs"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>T</FormLabel>
-                      <FormControl>
-                        <Input placeholder="..." type="number" {...field} />
-                      </FormControl>
-                      <FormDescription></FormDescription>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </CardContent>
-            </Card>
-
-            <Card className="w-full col-span-1 md:col-span-2 lg:col-span-2">
-              <CardHeader className=" justify-center items-center">
-                <CardTitle className="font-medium text-md">FS</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <FormField
-                  control={form.control}
-                  name="fs"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>FS(m)</FormLabel>
-                      <FormControl>
-                        <Input placeholder="..." type="number" {...field} />
-                      </FormControl>
-                      <FormDescription></FormDescription>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                <FormField
-                  control={form.control}
-                  name="hdfs"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>HD(m)</FormLabel>
-                      <FormControl>
-                        <Input placeholder="..." type="number" {...field} />
-                      </FormControl>
-                      <FormDescription></FormDescription>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                <FormField
-                  control={form.control}
-                  name="tfs"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>T</FormLabel>
-                      <FormControl>
-                        <Input placeholder="..." type="number" {...field} />
-                      </FormControl>
-                      <FormDescription></FormDescription>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </CardContent>
-            </Card>
-          </div>
-
-
-          <Button className=" self-end w-full md:w-auto" type="submit">
-            Add Point
-          </Button>
-        </form>
-      </Form> */}
-
-      <MainComponent />
+      <MainComponent Submitdata={Submitdata} />
     </MainLayout>
   );
 }
@@ -337,7 +107,12 @@ const NumberInputComponent = ({ onSubmit }: any) => {
   );
 };
 
-const InputsComponent = ({ currentNumber, onSubmit ,Number}: any) => {
+const InputsComponent = ({
+  currentNumber,
+  onSubmit,
+  Numberin,
+  // Submitdata,
+}: any) => {
   const [name, setName] = useState("");
   const [bs, setBs] = useState("");
   const [hdbs, setHdbs] = useState("");
@@ -348,7 +123,7 @@ const InputsComponent = ({ currentNumber, onSubmit ,Number}: any) => {
 
   const handleSubmit = () => {
     const inputData = {
-      [name]: { bs, hdbs, tbs, fs, hdfs, tfs }
+      [name]: { bs, hdbs, tbs, fs, hdfs, tfs },
     };
     onSubmit(inputData);
     setName("");
@@ -361,124 +136,139 @@ const InputsComponent = ({ currentNumber, onSubmit ,Number}: any) => {
   };
 
   return (
-    
-<div className="flex flex-col space-y-4 h-[90vh] p-4">
-{currentNumber === Number ? (
-        <h1>Enter Start Point</h1>
-      ) : currentNumber > Number / 2 ? (
-        <h1>Enter Forward Intermidate points</h1>
-      ) : currentNumber === Number / 2 ? (
-        <h1>Enter End Point</h1>
-      ) : (
-        <h1>Enter Backword Intermidate points</h1>
-      )}
-<Label htmlFor="terms">Name</Label>
-          <Input
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            className="py-3"
-            type="text"
-          />
+    <div className="flex flex-col space-y-4 h-[90vh] p-4">
+      <div className="flex flex-col space-y-4 h-[90vh] p-4">
+        {currentNumber === Numberin ? (
+          <h1>Enter Start Point</h1>
+        ) : currentNumber > Numberin / 2 ? (
+          <h1>Enter Forward Intermidate points</h1>
+        ) : currentNumber === Numberin / 2 ? (
+          <h1>Enter End Point</h1>
+        ) : (
+          <h1>Enter Backword Intermidate points</h1>
+        )}
+        <Label htmlFor="terms">Name</Label>
+        <Input
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          className="py-3"
+          type="text"
+        />
 
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 ">
+          <Card className="w-full col-span-1 md:col-span-2 lg:col-span-2 ">
+            <CardHeader className=" justify-center items-center">
+              <CardTitle className="font-medium text-md">BS</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <Label htmlFor="terms">bs(m)</Label>
+              <Input
+                value={bs}
+                onChange={(e) => setBs(e.target.value)}
+                className="py-3"
+                type="text"
+              />
 
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 ">
-      <Card className="w-full col-span-1 md:col-span-2 lg:col-span-2 ">
-        <CardHeader className=" justify-center items-center">
-          <CardTitle className="font-medium text-md">BS</CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-4">
-         
-          <Label htmlFor="terms">bs(m)</Label>
-          <Input
-            value={bs}
-            onChange={(e) => setBs(e.target.value)}
-            className="py-3"
-            type="text"
-          />
+              <Label htmlFor="terms">hdbs</Label>
+              <Input
+                value={hdbs}
+                onChange={(e) => setHdbs(e.target.value)}
+                className="py-3"
+                type="text"
+              />
 
-          <Label htmlFor="terms">hdbs</Label>
-          <Input
-            value={hdbs}
-            onChange={(e) => setHdbs(e.target.value)}
-            className="py-3"
-            type="text"
-          />
+              <Label htmlFor="terms">tbs</Label>
+              <Input
+                value={tbs}
+                onChange={(e) => setTbs(e.target.value)}
+                className="py-3"
+                type="text"
+              />
+            </CardContent>
+          </Card>
 
-          <Label htmlFor="terms">tbs</Label>
-          <Input
-            value={tbs}
-            onChange={(e) => setTbs(e.target.value)}
-            className="py-3"
-            type="text"
-          />
-          
-        </CardContent>
-      </Card>
+          <Card className="w-full col-span-1 md:col-span-2 lg:col-span-2">
+            <CardHeader className=" justify-center items-center">
+              <CardTitle className="font-medium text-md">FS</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <Label htmlFor="terms">FS</Label>
+              <Input
+                value={fs}
+                onChange={(e) => setFs(e.target.value)}
+                className="py-3"
+                type="text"
+              />
+              <Label htmlFor="terms">hdfs</Label>
+              <Input
+                value={hdfs}
+                onChange={(e) => setHdfs(e.target.value)}
+                className="py-3"
+                type="text"
+              />
+              <Label htmlFor="terms">tfs</Label>
+              <Input
+                value={tfs}
+                onChange={(e) => setTfs(e.target.value)}
+                className="py-3"
+                type="text"
+              />
+            </CardContent>
+          </Card>
+        </div>
 
-      <Card className="w-full col-span-1 md:col-span-2 lg:col-span-2">
-        <CardHeader className=" justify-center items-center">
-          <CardTitle className="font-medium text-md">FS</CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          
-        <Label htmlFor="terms">FS</Label>
-          <Input
-            value={fs}
-            onChange={(e) => setFs(e.target.value)}
-            className="py-3"
-            type="text"
-          />
-          <Label htmlFor="terms">hdfs</Label>
-          <Input
-            value={hdfs}
-            onChange={(e) => setHdfs(e.target.value)}
-            className="py-3"
-            type="text"
-          />
-          <Label htmlFor="terms">tfs</Label>
-          <Input
-            value={tfs}
-            onChange={(e) => setTfs(e.target.value)}
-            className="py-3"
-            type="text"
-          />
-          
-
-
-          
-        </CardContent>
-      </Card>
-      <Button
-        className=" self-end w-full md:w-auto"
-        onClick={handleSubmit}
-        type="submit"
-      >
-        Next
-      </Button>
-    </div>
+        {currentNumber === 1 ? (
+          <Button
+            className=" self-end w-full md:w-auto"
+            onClick={handleSubmit}
+            type="submit"
+          >
+            Save Data
+          </Button>
+        ) : (
+          <Button
+            className=" self-end w-full md:w-auto"
+            onClick={handleSubmit}
+            type="submit"
+          >
+            Next
+          </Button>
+        )}
+      </div>
     </div>
   );
 };
-const MainComponent = () => {
+const MainComponent = ({ Submitdata }: any) => {
   const [showInputComponent, setShowInputComponent] = useState(true);
-  const [currentNumber, setCurrentNumber] = useState(0);
-  const [Number, setNumber] = useState(0);
+  const [currentNumber, setCurrentNumber] = useState(-1);
+  const [Numberin, setNumber] = useState(0);
   const [inputs, setInputs] = useState<any>([]);
 
-  const handleNumberSubmit = (num :any) => {
+  const handleNumberSubmit = (num: any) => {
     setShowInputComponent(false);
-    setNumber(((parseInt(num))* 2) +2)
-    setCurrentNumber(((parseInt(num))* 2) +2);
+    setNumber(parseInt(num) * 2 + 2);
+    setCurrentNumber(parseInt(num) * 2 + 2);
   };
-
-  const handleThreeInputsSubmit = (inputData :any) => {
+  const HandleDataSubmit = ():any => {
+   
+      console.log("Inputs:", inputs);
+      Submitdata(inputs);
+   
+  };
+  const handleThreeInputsSubmit = (inputData: any) => {
     setInputs([...inputs, inputData]);
     setCurrentNumber(currentNumber - 1);
+
+    
+  };
+  useEffect(() => {
+    // this will trigger when search will get updated
     if (currentNumber === 0) {
       setShowInputComponent(true);
-      console.log('Final Inputs:', inputs);
+      console.log("Final Inputs:", inputs);
+      Submitdata(inputs);
     }
-  };
+ }, [inputs]);
 
   return (
     <div>
@@ -488,7 +278,8 @@ const MainComponent = () => {
         <InputsComponent
           currentNumber={currentNumber}
           onSubmit={handleThreeInputsSubmit}
-          Number={Number}
+          Numberin={Numberin}
+          // Submitdata={HandleDataSubmit}
         />
       )}
     </div>

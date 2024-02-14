@@ -5,7 +5,7 @@ export const useSavePoint = async (formData: PointRequest) => {
   try {
     // Serialize the formData object into query parameters
     const queryParams = new URLSearchParams(formData).toString();
-    const url = `${BASE_URL}?${queryParams}`;
+    const url = `${BASE_URL}/save-point?${queryParams}`;
 
     // Make a GET request using fetch
     const response = await fetch(url);

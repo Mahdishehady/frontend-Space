@@ -5,8 +5,16 @@ import { useEffect } from "react";
 export default function Main() {
   const router = useRouter();
   useEffect(() => {
-    // Navigate to the "/login" route when the component mounts
-    router.push("/login");
+    const email = localStorage.getItem("email");
+
+    // Check if email is found in localStorage
+    if (email) {
+      // If email is found, navigate to "/example"
+      router.push("/heightanomaly/analysis/tables");
+    } else {
+      // If email is not found, navigate to "/login"
+      router.push("/login");
+    }
   });
   return <></>;
 }
