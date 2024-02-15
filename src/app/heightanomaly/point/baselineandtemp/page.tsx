@@ -68,7 +68,7 @@ export default function PointForm() {
             />
           </svg>
           <h2 className="text-lg  tracking-tight">
-            Point {">"} BaselineAndTemp
+            Point {">"} ADD Start_End Points
           </h2>
         </div>
       </div>

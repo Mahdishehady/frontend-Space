@@ -9,33 +9,26 @@ interface LevellingItem {
     "H_levelling_m": number;
   }
 
-interface CalcDataTableParams {
-  levelling: LevellingItem[];
-  startPoint: string;
-  endPoint: string;
-}
+  interface CalcDataTableParams {
+    levelling: LevellingItem[];
+  }
 interface CalcDataTableApi {
   levelling: LevellingData;
   startPoint: string;
   endPoint: string;
 }
 
-export const calcDataTable = async (dataForPoints: CalcDataTableParams) => {
+export const getNLevelling = async (dataForPoints: CalcDataTableParams) => {
   try {
     
-    const levelling = convertArrayToObject(dataForPoints.levelling);
+    const levelling :LevellingData = convertArrayToObject(dataForPoints.levelling);
 
-    const requestData: CalcDataTableApi = {
-      levelling: levelling,
-      startPoint: dataForPoints.startPoint,
-      endPoint: dataForPoints.endPoint,
-    };
-    const response = await fetch(`${BASE_URL}/get-data-table`, {
+    const response = await fetch(`${BASE_URL}/getNLevelling`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(requestData),
+      body: JSON.stringify(levelling),
     });
 
     if (!response.ok) {

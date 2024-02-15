@@ -11,8 +11,8 @@ import {
 
 export function Tablecalc({ data, headers, description }: any) {
   return (
-    <Table>
-      <TableCaption>{description}</TableCaption>
+    <Table >
+      
       <TableHeader>
         <TableRow>
           {headers.map((header: any, index: any) => (
@@ -29,6 +29,17 @@ export function Tablecalc({ data, headers, description }: any) {
           </TableRow>
         ))}
       </TableBody>
+      {description && (<TableFooter className="bg-primary-foreground text-foreground" >
+        <TableRow >
+          <TableCell colSpan={3}>Mean</TableCell>
+          <TableCell className="text-left ">{description.mean}</TableCell>
+        </TableRow>
+        <TableRow>
+          <TableCell colSpan={3}>STD</TableCell>
+          <TableCell className="text-left">{description.STD}</TableCell>
+        </TableRow>
+      </TableFooter>)}
+      
     </Table>
   );
 }

@@ -113,7 +113,7 @@ export function Sidebar({ className }: SidebarProps) {
                     href="/heightanomaly/point/baselineandtemp"
                     className='text-sm transition-colors hover:text-primary'
                   >
-                    <div className="pl-9 m-4"> BaselineAndTemp</div>
+                    <div className="pl-9 m-4"> Start_End Points</div>
                   </Link>
 
                 
