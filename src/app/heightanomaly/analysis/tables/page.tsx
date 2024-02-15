@@ -1,6 +1,6 @@
 "use client";
 import MainLayout from "@/components/layout/MainLayout/MainLayout";
-import React from "react";
+import React, { useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button";
 import {
@@ -17,7 +17,15 @@ import { useForm } from "react-hook-form";
 import { Input } from "@/components/ui/input";
 import { Tablecalc } from "./component/table";
 import { Card, CardHeader, CardTitle } from "@/components/ui/card";
+import { useMutation } from "react-query";
+import { calcDataTable } from "@/app/services/datatableservice";
+import { toast } from "react-toastify";
 
+interface CalcDataTableParams {
+  levelling: LevellingData;
+  startPoint: string;
+  endPoint: string;
+}
 const levelling_headers = ["Point", "H(Levelling)"];
 
 const levelling = [
@@ -92,7 +100,9 @@ const misclousreBaseline = [
     AdjDiffInElev: -82.93735629,
   },
 ];
-
+interface LevellingData {
+  [key: string]: { "H (Levelling) m": number };
+}
 const profileFormSchema = z.object({
   point1: z
     .string()
@@ -118,7 +128,20 @@ export type PointsRequest = {
 
 export type ProfileFormValues = z.infer<typeof profileFormSchema>;
 const defaultValues: Partial<ProfileFormValues> = {};
+
 export default function Tables() {
+  const [levellingData, setLevellingData] = useState<LevellingData>({});
+  const { mutate, status } = useMutation(calcDataTable, {
+    onSuccess: (data) => {
+      console.log(data);
+      const message = data.message;
+      
+    },
+    onError: () => {
+      alert("there was an error");
+    },
+  });
+
   const [clicked, setclicked] = React.useState<boolean>(false);
 
   const form = useForm<ProfileFormValues>({
@@ -128,8 +151,13 @@ export default function Tables() {
   });
   async function onSubmit(data: PointsRequest) {
     try {
+      const dataForPoints :any ={}
+   dataForPoints["levelling"]=levellingData
+   dataForPoints["startPoint"]=data.point1
+   dataForPoints["endPoint"]=data.point2
       console.log(data);
 
+      mutate(dataForPoints);
       setclicked(true);
       form.reset();
     } catch (error) {

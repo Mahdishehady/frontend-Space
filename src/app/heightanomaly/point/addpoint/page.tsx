@@ -104,7 +104,7 @@ export default function PointForm() {
       console.log(data);
       mutate(data);
 
-      form.reset();
+      form.reset
     } catch (error) {
       console.error("Error saving data:", error);
     }
