@@ -1,1 +1,1 @@
-export const BASE_URL="https://3.144.139.183/api"
+export const BASE_URL="https://space-api-lf7n.onrender.com/api"
