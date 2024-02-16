@@ -298,7 +298,7 @@ export default function Tables() {
           />
           <div className=" lg:pb-2">
             <Button className="  w-full md:w-auto" type="submit">
-              Calculate
+              Calculate & AddMore
             </Button>
           </div>
         </form>
