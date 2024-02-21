@@ -72,7 +72,17 @@ const profileFormSchema = z.object({
 export type ProfileFormValues = z.infer<typeof profileFormSchema>;
 
 // This can come from your database or API.
-const defaultValues: Partial<ProfileFormValues> = {};
+const defaultValues: Partial<ProfileFormValues> = {
+  Name: "", // Provide default value for Name
+  latdegree: "", // Provide default value for latdegree
+  latminute: "", // Provide default value for latminute
+  latsecond: "", // Provide default value for latsecond
+  longdegree: "", // Provide default value for longdegree
+  longminute: "", // Provide default value for longminute
+  longsecond: "", // Provide default value for longsecond
+  geodeticheight: "", // Provide default value for geodeticheight
+  h: "", // Provide default value for h
+};
 
 export default function PointForm() {
   const form = useForm<ProfileFormValues>({

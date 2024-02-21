@@ -98,7 +98,11 @@ export type PointsRequest = {
 };
 
 export type ProfileFormValues = z.infer<typeof profileFormSchema>;
-const defaultValues: Partial<ProfileFormValues> = {};
+const defaultValues: Partial<ProfileFormValues> = {
+
+  point1: "", // Provide default value for point1
+  point2: "", // Provide default value for point2
+};
 
 export default function Tables() {
   const [levellingData, setLevellingData] = useState<LevellingData[]>([]);
@@ -139,53 +143,55 @@ export default function Tables() {
             })
           );
           setLevellingData(levellingData_api);
-        }
 
-        if (data.data.rod_temp_corr_baseline) {
-          const rodTempCorrBaselineData: RodTempCorrBaselineItem[] =
-            Object.values(data.data.rod_temp_corr_baseline);
-          setrodTempCorrBaseline((prevRodTempCorrBaseline) => [
-            ...prevRodTempCorrBaseline,
-            ...rodTempCorrBaselineData,
-          ]);
-        }
-        if (data.data.misclosure_baseline) {
-          const misclosureBaselineKeys = Object.keys(
-            data.data.misclosure_baseline
-          );
-          const newDataArray: misclousreBaseline[] = [];
-          misclosureBaselineKeys.forEach((key) => {
-            const misclosureBaselineData = data.data.misclosure_baseline[key];
-            newDataArray.push({
-              AdjTempDiffInElev:
-                misclosureBaselineData["Adj Temp Diff in Elev"],
-              Error: misclosureBaselineData.Error,
-              AdjDiffInElev: misclosureBaselineData["Adj Diff in Elev"],
+          if (data.data.rod_temp_corr_baseline) {
+            const rodTempCorrBaselineData: RodTempCorrBaselineItem[] =
+              Object.values(data.data.rod_temp_corr_baseline);
+            setrodTempCorrBaseline((prevRodTempCorrBaseline) => [
+              ...prevRodTempCorrBaseline,
+              ...rodTempCorrBaselineData,
+            ]);
+          }
+          if (data.data.misclosure_baseline) {
+            const misclosureBaselineKeys = Object.keys(
+              data.data.misclosure_baseline
+            );
+            const newDataArray: misclousreBaseline[] = [];
+            misclosureBaselineKeys.forEach((key) => {
+              const misclosureBaselineData = data.data.misclosure_baseline[key];
+              newDataArray.push({
+                AdjTempDiffInElev:
+                  misclosureBaselineData["Adj Temp Diff in Elev"],
+                Error: misclosureBaselineData.Error,
+                AdjDiffInElev: misclosureBaselineData["Adj Diff in Elev"],
+              });
             });
-          });
-          setrodmisclousreBaseline((prevData) => [
-            ...prevData,
-            ...newDataArray,
-          ]);
+            setrodmisclousreBaseline((prevData) => [
+              ...prevData,
+              ...newDataArray,
+            ]);
+          }
+          if (true) {
+            const {
+              headers,
+              data: decimalDegreesTableData,
+              description,
+            } = extractDecimalDegreesData(data.data);
+            setdecimaldegreesdata((prevData: any) => [
+              ...prevData,
+              ...decimalDegreesTableData,
+            ]);
+          }
+          setclicked(true);
+          toast.success("calculated successfully!!");
         }
-        if (true) {
-          const {
-            headers,
-            data: decimalDegreesTableData,
-            description,
-          } = extractDecimalDegreesData(data.data);
-          setdecimaldegreesdata((prevData: any) => [
-            ...prevData,
-            ...decimalDegreesTableData,
-          ]);
+        else {
+          toast.error(
+            "Oops! Looks like there's a little hiccup 🤔. It seems points haven't been entered yet."
+          );
         }
-        setclicked(true);
-        toast.success("calculated successfully!!");
-      } else {
-        toast.error(
-          "Oops! Looks like there's a little hiccup 🤔. It seems points haven't been entered yet."
-        );
-      }
+       
+      } 
     },
 
     onError: () => {
