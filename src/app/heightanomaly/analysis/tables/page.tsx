@@ -174,11 +174,18 @@ export default function Tables() {
             data: decimalDegreesTableData,
             description,
           } = extractDecimalDegreesData(data.data);
-          setdecimaldegreesdata((prevData :any) => [
-            ...prevData,...decimalDegreesTableData]);
+          setdecimaldegreesdata((prevData: any) => [
+            ...prevData,
+            ...decimalDegreesTableData,
+          ]);
         }
+        setclicked(true);
+        toast.success("calculated successfully!!");
+      } else {
+        toast.error(
+          "Oops! Looks like there's a little hiccup 🤔. It seems points haven't been entered yet."
+        );
       }
-      toast.success("calculated successfully!!");
     },
 
     onError: () => {
@@ -188,40 +195,48 @@ export default function Tables() {
 
   const CalculateGeoidUndulationNLevel = useMutation(getNLevelling, {
     onSuccess: (data) => {
-      const nlevelingData = transformNlevellingData(data);
-      setNLevellingData(nlevelingData);
-      toast.success("getNLevelling successfully!!");
+      if (data) {
+        const nlevelingData = transformNlevellingData(data);
+        setNLevellingData(nlevelingData);
+        toast.success("NLevelling calculated successfully!!");
 
-      setshowNlevelingTable(true);
+        setshowNlevelingTable(true);
+      }
     },
   });
 
   const getGeoidUndulationNEGM2008 = useMutation(getNEGM2008, {
     onSuccess: (data) => {
-      const NEGM2008Data = transformNEGM2008Data(data);
-      setNEGM2008data(NEGM2008Data);
-      toast.success("getNEGM2008 successfully!!");
-      setshowNEGM2008Table(true);
+      if (data) {
+        const NEGM2008Data = transformNEGM2008Data(data);
+        setNEGM2008data(NEGM2008Data);
+        toast.success("NLevelling calculated successfully!!");
+        setshowNEGM2008Table(true);
+      }
     },
   });
 
   const meandeviation = useMutation(getmeandeviation, {
     onSuccess: (data) => {
-     const description:any={}
-     description["mean"]=data['Mean'];
-     description["STD"]=data['STD DEV'];
-      
-     setdescriptionData(description)
-    const dataafterfilter= filteredData(data)
-    const tableData = Object.entries(dataafterfilter).map(([key, value]: [string, any]) => ({
-      Point: key,
-      "ΔN": value["ΔN"],
-      "V": value["V"],
-      "V^2": value["V^2"],
-    }));
-      setmeandeviationdata(tableData)
-      toast.success("getNEGM2008 successfully!!");
-      setshowmeandeviation(true);
+      if (data) {
+        const description: any = {};
+        description["mean"] = data["Mean"];
+        description["STD"] = data["STD DEV"];
+
+        setdescriptionData(description);
+        const dataafterfilter = filteredData(data);
+        const tableData = Object.entries(dataafterfilter).map(
+          ([key, value]: [string, any]) => ({
+            Point: key,
+            ΔN: value["ΔN"],
+            V: value["V"],
+            "V^2": value["V^2"],
+          })
+        );
+        setmeandeviationdata(tableData);
+        toast.success("Meandeviation calculated successfully!!");
+        setshowmeandeviation(true);
+      }
     },
   });
 
@@ -234,7 +249,7 @@ export default function Tables() {
       console.log(data);
 
       calctabeldata.mutateAsync(dataForPoints);
-      setclicked(true);
+
       form.reset();
     } catch (error) {
       console.error("Error saving data:", error);
